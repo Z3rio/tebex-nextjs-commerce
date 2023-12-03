@@ -1,45 +1,16 @@
 import { TAGS } from '@lib/constants';
-import { ensureStartsWith } from '@lib/utils';
 import { revalidateTag } from 'next/cache';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  AddPackageToBasket,
-  Basket,
-  Category,
-  CreateBasket,
-  GetCategories,
-  GetCategory,
-  GetPackage,
-  Package,
-  PackageType,
-  RemovePackage,
-  SetWebstoreIdentifier
-} from 'tebex_headless';
-import { Connection, Menu, Page } from './types';
+import { Basket, Category, Data, Package, PackageType } from 'tebex_headless';
+import { Page } from './types';
 
-const domain =
-  process.env.NODE_ENV == 'development'
-    ? 'http://localhost:3000/'
-    : process.env.BASE_URL
-    ? ensureStartsWith(process.env.BASE_URL, 'https://')
-    : '';
 const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
 const baseUrl = 'https://headless.tebex.io/api';
 
-SetWebstoreIdentifier(publicApiKey);
-
-const removeEdgesAndNodes = (array: Connection<any>) => {
-  return array.edges.map((edge) => edge?.node);
-};
-
-const reshapeBasket = (basket: Basket): Basket => {
-  return basket;
-};
-
-const reshapeCategories = (categories: Category[]): Category[] => {
-  return categories;
-};
+// const removeEdgesAndNodes = (array: Connection<any>) => {
+//   return array.edges.map((edge) => edge?.node);
+// };
 
 const reshapeCategory = (category: Category): Category => {
   return category;
@@ -57,44 +28,15 @@ const reshapeCategory = (category: Category): Category => {
 //   });
 // };
 
-const reshapePackage = (
-  pkg: Package
-  // filterHiddenProducts: boolean = true
-): Package => {
-  // if (!product || (filterHiddenProducts && product.tags.includes(HIDDEN_PRODUCT_TAG))) {
-  //   return undefined;
-  // }
-  // const { images, variants, ...rest } = product;
-  // return {
-  //   ...rest,
-  //   images: reshapeImages(images, product.title),
-  //   variants: removeEdgesAndNodes(variants)
-  // };
-
-  return pkg;
-};
-
-const reshapePackages = (packages: Package[]): Package[] => {
-  // const reshapedProducts = [];
-
-  // for (const product of products) {
-  //   if (product) {
-  //     const reshapedProduct = reshapeProduct(product);
-
-  //     if (reshapedProduct) {
-  //       reshapedProducts.push(reshapedProduct);
-  //     }
-  //   }
-  // }
-
-  // return reshapedProducts;
-  return packages;
-};
-
 export async function createBasket(): Promise<Basket> {
-  const res = await CreateBasket(domain, domain + '?cancelled=true');
+  const res = await simpleRequest<Data<Basket>>(
+    `${baseUrl}/accounts/${publicApiKey}/baskets`,
+    {},
+    {},
+    { method: 'POST' }
+  );
 
-  return reshapeBasket(res);
+  return res.data;
 }
 
 export async function addToBasket(
@@ -102,66 +44,30 @@ export async function addToBasket(
   packageId: number,
   packageType: PackageType
 ): Promise<Basket> {
-  return reshapeBasket(await AddPackageToBasket(basketId, packageId, 1, packageType));
+  const res = await simpleRequest<Data<Basket>>(
+    `${baseUrl}/baskets/${basketId}/packages`,
+    {
+      type: packageType,
+      package_id: packageId
+    },
+    {},
+    { method: 'POST' }
+  );
+
+  return res.data;
 }
 
 export async function removeFromBasket(basketId: string, packageId: number): Promise<Basket> {
-  return reshapeBasket(await RemovePackage(basketId, packageId));
-}
+  const res = await simpleRequest<Data<Basket>>(
+    `${baseUrl}/baskets/${basketId}/packages/remove`,
+    {
+      package_id: packageId
+    },
+    {},
+    { method: 'POST' }
+  );
 
-// export async function updateBasket(
-//   cartId: string,
-//   lines: { id: string; merchandiseId: string; quantity: number }[]
-// ): Promise<Basket> {
-//   const res = await shopifyFetch<ShopifyUpdateCartOperation>({
-//     query: editCartItemsMutation,
-//     variables: {
-//       cartId,
-//       lines
-//     },
-//     cache: 'no-store'
-//   });
-
-//   return reshapeBasket(res.body.data.cartLinesUpdate.cart);
-// }
-
-export async function getBasket(basketId: string): Promise<Basket | undefined> {
-  const res = await getBasket(basketId);
-
-  if (!res) {
-    return undefined;
-  }
-
-  return reshapeBasket(res);
-}
-
-export async function getCategory(
-  categoryId: number,
-  includePackages = false
-): Promise<Category | undefined> {
-  return reshapeCategory(await GetCategory(categoryId, includePackages));
-}
-
-export async function getCategories(includePackages = false): Promise<Category[]> {
-  return reshapeCategories(await GetCategories(includePackages));
-}
-
-export async function getMenu(handle: string): Promise<Menu[]> {
-  // const res = await shopifyFetch<ShopifyMenuOperation>({
-  //   query: getMenuQuery,
-  //   tags: [TAGS.collections],
-  //   variables: {
-  //     handle
-  //   }
-  // });
-
-  // return (
-  //   res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
-  //     title: item.title,
-  //     path: item.url.replace(domain, '').replace('/collections', '/search').replace('/pages', '')
-  //   })) || []
-  // );
-  return [];
+  return res.data;
 }
 
 export async function getPage(handle: string): Promise<Page | undefined> {
@@ -172,45 +78,74 @@ export async function getPage(handle: string): Promise<Page | undefined> {
   // return res.body.data.pageByHandle;
   return undefined;
 }
-
 export async function getPages(): Promise<Page[]> {
   // const res = await shopifyFetch<ShopifyPagesOperation>({
   //   query: getPagesQuery
   // });
-
   // return removeEdgesAndNodes(res.body.data.pages);
   return [];
 }
 
-export async function getPackage(id: number): Promise<Package | undefined> {
-  const res = await GetPackage(id);
+export async function getBasket(basketId: string): Promise<Basket | undefined> {
+  const res = await simpleRequest<Data<Basket>>(
+    `${baseUrl}/accounts/${publicApiKey}/baskets/${basketId}`
+  );
 
-  return reshapePackage(res);
+  return res.data;
+}
+
+export async function getCategory(
+  categoryId: number,
+  includePackages = false
+): Promise<Category | undefined> {
+  const res = await simpleRequest<Data<Category>>(
+    `${baseUrl}/accounts/${publicApiKey}/categories/${categoryId}?includePackages=${(includePackages
+      ? 1
+      : 0
+    ).toString()}`
+  );
+
+  return res.data;
+}
+
+export async function getCategories(includePackages = false): Promise<Category[]> {
+  const res = await simpleRequest<Data<Category[]>>(
+    `${baseUrl}/accounts/${publicApiKey}/categories?includePackages=${(includePackages
+      ? 1
+      : 0
+    ).toString()}`
+  );
+
+  return res.data;
 }
 
 export async function simpleRequest<T>(
   url: string,
-  headers: Record<string, string> = {},
-  body?: Record<string, unknown>
+  body?: Record<string, unknown>,
+  headers?: Record<string, unknown>,
+  custom?: Record<string, unknown>
 ) {
   const res = await fetch(url, {
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     headers: {
       'Content-Type': 'application/json; charset=UTF8',
-      ...headers
+      ...(headers ? headers : {})
     },
-    method: 'GET'
+    method: 'GET',
+    ...(custom ? custom : {})
   });
 
   return (await res.json()) as T;
 }
 
 export async function getPackages(query?: string, reverse = false): Promise<Package[]> {
-  const res = await simpleRequest<Package[]>(`${baseUrl}/accounts/${publicApiKey}/packages`);
+  query = query ? query.toLowerCase() : query;
 
-  return reshapePackages(reverse ? res.reverse() : res).filter(
-    (pkg) => query == undefined || pkg.name.includes(query)
-  );
+  const res = await simpleRequest<Data<Package[]>>(`${baseUrl}/accounts/${publicApiKey}/packages`);
+  const data = res.data;
+  const reshaped = reverse ? data.reverse() : data;
+
+  return reshaped.filter((pkg) => query == undefined || pkg.name.toLowerCase().includes(query));
 }
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
