@@ -1,5 +1,5 @@
+import { getPage } from '@lib/tebex';
 import OpengraphImage from 'components/opengraph-image';
-import { getPage } from 'lib/tebex';
 
 export const runtime = 'edge';
 

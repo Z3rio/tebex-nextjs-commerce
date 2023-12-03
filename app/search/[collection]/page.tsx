@@ -1,10 +1,10 @@
-import { getCollection, getCollectionProducts } from 'lib/tebex';
+import { getCollection, getCollectionPackages } from '@lib/tebex';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { defaultSort, sorting } from '@lib/constants';
 import Grid from 'components/grid';
 import ProductGridItems from 'components/layout/product-grid-items';
-import { defaultSort, sorting } from 'lib/constants';
 
 export const runtime = 'edge';
 
@@ -33,7 +33,7 @@ export default async function CategoryPage({
 }) {
   const { sort } = searchParams as { [key: string]: string };
   const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
-  const products = await getCollectionProducts({ collection: params.collection, sortKey, reverse });
+  const products = await getCollectionPackages({ collection: params.collection, sortKey, reverse });
 
   return (
     <section>

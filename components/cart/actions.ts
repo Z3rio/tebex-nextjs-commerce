@@ -1,7 +1,7 @@
 'use server';
 
-import { TAGS } from 'lib/constants';
-import { addToCart, createCart, getCart, removeFromCart, updateCart } from 'lib/tebex';
+import { TAGS } from '@lib/constants';
+import { addToCart, createCart, getBasket, removeFromCart, updateCart } from '@lib/tebex';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -10,7 +10,7 @@ export async function addItem(prevState: any, selectedVariantId: string | undefi
   let cart;
 
   if (cartId) {
-    cart = await getCart(cartId);
+    cart = await getBasket(cartId);
   }
 
   if (!cartId || !cart) {

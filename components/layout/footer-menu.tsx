@@ -1,7 +1,7 @@
 'use client';
 
+import { Menu } from '@lib/tebex/types';
 import clsx from 'clsx';
-import { Menu } from 'lib/tebex/types';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';

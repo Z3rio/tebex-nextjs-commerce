@@ -1,6 +1,6 @@
+import { getCollectionPackages } from '@lib/tebex';
+import type { Product } from '@lib/tebex/types';
 import { GridTileImage } from 'components/grid/tile';
-import { getCollectionProducts } from 'lib/tebex';
-import type { Product } from 'lib/tebex/types';
 import Link from 'next/link';
 
 function ThreeItemGridItem({
@@ -39,7 +39,7 @@ function ThreeItemGridItem({
 
 export async function ThreeItemGrid() {
   // Collections that start with `hidden-*` are hidden from the search page.
-  const homepageItems = await getCollectionProducts({
+  const homepageItems = await getCollectionPackages({
     collection: 'hidden-homepage-featured-items'
   });
 

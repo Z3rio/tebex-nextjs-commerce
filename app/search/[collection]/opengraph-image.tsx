@@ -1,5 +1,5 @@
+import { getCollection } from '@lib/tebex';
 import OpengraphImage from 'components/opengraph-image';
-import { getCollection } from 'lib/tebex';
 
 export const runtime = 'edge';
 

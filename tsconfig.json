@@ -16,6 +16,9 @@
     "incremental": true,
     "baseUrl": ".",
     "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@lib/*": ["./lib/*"],
+    },
     "plugins": [
       {
         "name": "next"

@@ -1,8 +1,8 @@
 'use client';
 
+import { ProductOption, ProductVariant } from '@lib/tebex/types';
+import { createUrl } from '@lib/utils';
 import clsx from 'clsx';
-import { ProductOption, ProductVariant } from 'lib/tebex/types';
-import { createUrl } from 'lib/utils';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type Combination = {

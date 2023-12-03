@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
+import { getMenu } from '@lib/tebex';
 import FooterMenu from 'components/layout/footer-menu';
 import LogoSquare from 'components/logo-square';
-import { getMenu } from 'lib/tebex';
 import { Suspense } from 'react';
 
 const { COMPANY_NAME, SITE_NAME } = process.env;

@@ -1,5 +1,5 @@
-import { getCollections, getPages, getProducts } from 'lib/tebex';
-import { validateEnvironmentVariables } from 'lib/utils';
+import { getCollections, getPackages, getPages } from '@lib/tebex';
+import { validateEnvironmentVariables } from '@lib/utils';
 import { MetadataRoute } from 'next';
 
 type Route = {
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  const productsPromise = getProducts({}).then((products) =>
+  const productsPromise = getPackages().then((products) =>
     products.map((product) => ({
       url: `${baseUrl}/product/${product.handle}`,
       lastModified: product.updatedAt

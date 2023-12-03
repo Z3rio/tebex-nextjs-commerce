@@ -1,8 +1,8 @@
+import { getMenu } from '@lib/tebex';
+import { Menu } from '@lib/tebex/types';
 import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
 import LogoSquare from 'components/logo-square';
-import { getMenu } from 'lib/tebex';
-import { Menu } from 'lib/tebex/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import MobileMenu from './mobile-menu';
