@@ -8,30 +8,83 @@ export type Edge<T> = {
   node: T;
 };
 
-export type Cart = Omit<ShopifyCart, 'lines'> & {
-  lines: CartItem[];
-};
+export interface Code {
+  code: string;
+}
 
-export type CartItem = {
-  id: string;
+export interface InBasket {
   quantity: number;
-  cost: {
-    totalAmount: Money;
-  };
-  merchandise: {
-    id: string;
-    title: string;
-    selectedOptions: {
-      name: string;
-      value: string;
-    }[];
-    product: Product;
-  };
+  price: number;
+  gift_username_id: string | null;
+  gift_username: string | null;
+}
+
+export interface BaseItem {
+  id: number;
+  name: string;
+}
+
+export interface GiftCardCode {
+  card_number: string;
+}
+
+export interface Links {
+  checkout: string;
+  [key: string]: string;
+}
+
+export interface Data<T> {
+  data: T;
+}
+
+export type PackageType = 'subscription' | 'single';
+
+export type Package = BaseItem & {
+  description: string;
+  type: PackageType;
+  disable_gifting: boolean;
+  disable_quantity: boolean;
+  expiration_date: string | null;
+  category: BaseItem;
+  base_price: number;
+  sales_tax: number;
+  total_price: number;
+  discount: number;
+  image: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
-export type Collection = ShopifyCollection & {
-  path: string;
+export type Category = BaseItem & {
+  description: string;
+  parent: Category | null;
+  order: number;
+  packages: Package[];
+  display_type: 'grid' | 'list';
 };
+
+export type BasketPackage = BaseItem & {
+  description: string;
+  in_basket: InBasket;
+};
+
+export interface Basket {
+  ident: string;
+  complete: boolean;
+  id: number;
+  count: string;
+  ip: string;
+  username_id: string | null;
+  username: string | null;
+  base_price: number;
+  sales_tax: number;
+  total_price: number;
+  packages: BasketPackage[];
+  coupons: Code[];
+  giftcards: GiftCardCode[];
+  creator_code: string;
+  links: Links;
+}
 
 export type Image = {
   url: string;
@@ -88,26 +141,6 @@ export type SEO = {
   description: string;
 };
 
-export type ShopifyCart = {
-  id: string;
-  checkoutUrl: string;
-  cost: {
-    subtotalAmount: Money;
-    totalAmount: Money;
-    totalTaxAmount: Money;
-  };
-  lines: Connection<CartItem>;
-  totalQuantity: number;
-};
-
-export type ShopifyCollection = {
-  handle: string;
-  title: string;
-  description: string;
-  seo: SEO;
-  updatedAt: string;
-};
-
 export type ShopifyProduct = {
   id: string;
   handle: string;
@@ -126,90 +159,6 @@ export type ShopifyProduct = {
   seo: SEO;
   tags: string[];
   updatedAt: string;
-};
-
-export type ShopifyCartOperation = {
-  data: {
-    cart: ShopifyCart;
-  };
-  variables: {
-    cartId: string;
-  };
-};
-
-export type ShopifyCreateCartOperation = {
-  data: { cartCreate: { cart: ShopifyCart } };
-};
-
-export type ShopifyAddToCartOperation = {
-  data: {
-    cartLinesAdd: {
-      cart: ShopifyCart;
-    };
-  };
-  variables: {
-    cartId: string;
-    lines: {
-      merchandiseId: string;
-      quantity: number;
-    }[];
-  };
-};
-
-export type ShopifyRemoveFromCartOperation = {
-  data: {
-    cartLinesRemove: {
-      cart: ShopifyCart;
-    };
-  };
-  variables: {
-    cartId: string;
-    lineIds: string[];
-  };
-};
-
-export type ShopifyUpdateCartOperation = {
-  data: {
-    cartLinesUpdate: {
-      cart: ShopifyCart;
-    };
-  };
-  variables: {
-    cartId: string;
-    lines: {
-      id: string;
-      merchandiseId: string;
-      quantity: number;
-    }[];
-  };
-};
-
-export type ShopifyCollectionOperation = {
-  data: {
-    collection: ShopifyCollection;
-  };
-  variables: {
-    handle: string;
-  };
-};
-
-export type ShopifyCollectionProductsOperation = {
-  data: {
-    collection: {
-      products: Connection<ShopifyProduct>;
-    };
-  };
-  variables: {
-    handle: string;
-    reverse?: boolean;
-    sortKey?: string;
-  };
-};
-
-export type ShopifyCollectionsOperation = {
-  data: {
-    collections: Connection<ShopifyCollection>;
-  };
 };
 
 export type ShopifyMenuOperation = {

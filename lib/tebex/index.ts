@@ -2,8 +2,7 @@ import { TAGS } from '@lib/constants';
 import { revalidateTag } from 'next/cache';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { Basket, Category, Data, Package, PackageType } from 'tebex_headless';
-import { Page } from './types';
+import { Basket, Category, Data, Package, PackageType, Page } from './types';
 
 const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
 const baseUrl = 'https://headless.tebex.io/api';
