@@ -212,3 +212,18 @@ export type ShopifyProductsOperation = {
     sortKey?: string;
   };
 };
+
+export interface Message {
+  status: number;
+  type: string;
+  title: string;
+  detail: string;
+  error_code: string;
+  field_details: unknown[];
+  meta: unknown[];
+}
+
+export interface AuthUrl {
+  name: string;
+  url: string;
+}

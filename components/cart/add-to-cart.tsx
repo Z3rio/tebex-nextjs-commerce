@@ -1,6 +1,7 @@
 'use client';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { PackageType } from '@lib/tebex/types';
 import clsx from 'clsx';
 import { addItem } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
@@ -41,14 +42,19 @@ function SubmitButton({ availableForSale }: { availableForSale: boolean }) {
 }
 
 export function AddToCart({
-  productId,
-  availableForSale
+  packageId,
+  availableForSale,
+  packageType
 }: {
-  productId: string;
+  packageId: string;
   availableForSale: boolean;
+  packageType: PackageType;
 }) {
   const [message, formAction] = useFormState(addItem, null);
-  const actionWithVariant = formAction.bind(null, productId);
+  const actionWithVariant = formAction.bind(null, {
+    packageId,
+    packageType
+  });
 
   return (
     <form action={actionWithVariant}>

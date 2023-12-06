@@ -2,7 +2,7 @@ import { TAGS } from '@lib/constants';
 import { revalidateTag } from 'next/cache';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { Basket, Category, Data, Package, PackageType, Page } from './types';
+import { AuthUrl, Basket, Category, Data, Message, Package, PackageType, Page } from './types';
 
 const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
 const baseUrl = 'https://headless.tebex.io/api';
@@ -42,8 +42,8 @@ export async function addToBasket(
   basketId: string,
   packageId: number,
   packageType: PackageType
-): Promise<Basket> {
-  const res = await simpleRequest<Data<Basket>>(
+): Promise<Data<Basket> | Message> {
+  const res = await simpleRequest<Data<Basket> | Message>(
     `${baseUrl}/baskets/${basketId}/packages`,
     {
       type: packageType,
@@ -53,7 +53,15 @@ export async function addToBasket(
     { method: 'POST' }
   );
 
-  return res.data;
+  return res;
+}
+
+export async function getAuthUrl(basketId: string, returnUrl: string): Promise<AuthUrl[]> {
+  const res = await simpleRequest<AuthUrl[]>(
+    `${baseUrl}/accounts/${publicApiKey}/baskets/${basketId}/auth?returnUrl=${returnUrl}`
+  );
+
+  return res;
 }
 
 export async function removeFromBasket(basketId: string, packageId: number): Promise<Basket> {

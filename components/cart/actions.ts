@@ -1,11 +1,15 @@
 'use server';
 
 import { TAGS } from '@lib/constants';
-import { addToCart, createCart, getBasket, removeFromCart, updateCart } from '@lib/tebex';
+import { addToBasket, createBasket, getAuthUrl, getBasket } from '@lib/tebex';
+import { PackageType } from '@lib/tebex/types';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-export async function addItem(prevState: any, selectedVariantId: string | undefined) {
+export async function addItem(
+  _prevState: unknown,
+  data: { packageId: string; packageType: PackageType }
+) {
   let cartId = cookies().get('cartId')?.value;
   let cart;
 
@@ -14,18 +18,35 @@ export async function addItem(prevState: any, selectedVariantId: string | undefi
   }
 
   if (!cartId || !cart) {
-    cart = await createCart();
-    cartId = cart.id;
+    cart = await createBasket();
+    cartId = cart.ident.toString();
     cookies().set('cartId', cartId);
   }
 
-  if (!selectedVariantId) {
+  if (!data.packageId) {
     return 'Missing product variant ID';
   }
 
   try {
-    await addToCart(cartId, [{ merchandiseId: selectedVariantId, quantity: 1 }]);
-    revalidateTag(TAGS.cart);
+    const addResp = await addToBasket(cartId, Number(data.packageId), data.packageType);
+
+    if ('status' in addResp && addResp.status == 422) {
+      const authUrls = await getAuthUrl(
+        cartId,
+        process.env.NODE_ENV == 'development'
+          ? 'http://localhost:3000'
+          : process.env.SITE_URL ?? 'about:blank'
+      );
+
+      if (authUrls[0] !== undefined) {
+        return 'You must login before doing this';
+      } else {
+        return 'Could not find any Auth URLs';
+      }
+    } else {
+      revalidateTag(TAGS.cart);
+      return 'Ran successfully';
+    }
   } catch (e) {
     return 'Error adding item to cart';
   }

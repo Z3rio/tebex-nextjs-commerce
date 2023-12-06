@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 
 // import Footer from 'components/layout/footer';
 import { getPackage } from '@lib/tebex';
+import Footer from 'components/layout/footer';
 import { Gallery } from 'components/product/gallery';
 import { ProductDescription } from 'components/product/product-description';
+import { Suspense } from 'react';
 
 export const runtime = 'edge';
 
@@ -93,9 +95,9 @@ export default async function ProductPage({ params }: { params: { handle: string
           </div>
         </div>
       </div>
-      {/* <Suspense>
+      <Suspense>
         <Footer />
-      </Suspense> */}
+      </Suspense>
     </>
   );
 }
