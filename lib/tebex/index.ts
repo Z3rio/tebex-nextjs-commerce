@@ -147,6 +147,14 @@ export async function getPackages(query?: string, reverse = false): Promise<Pack
   return reshaped.filter((pkg) => query == undefined || pkg.name.toLowerCase().includes(query));
 }
 
+export async function getPackage(id: number): Promise<Package> {
+  const res = await simpleRequest<Data<Package>>(
+    `${baseUrl}/accounts/${publicApiKey}/packages/${id}`
+  );
+
+  return res.data;
+}
+
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
 export async function revalidate(req: NextRequest): Promise<NextResponse> {
   // We always need to respond with a 200 status code to Shopify,

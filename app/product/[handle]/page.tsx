@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { HIDDEN_PRODUCT_TAG } from '@lib/constants';
-import { getPackage } from '@lib/tebex';
-import { Image } from '@lib/tebex/types';
 // import Footer from 'components/layout/footer';
+import { getPackage } from '@lib/tebex';
 import { Gallery } from 'components/product/gallery';
 import { ProductDescription } from 'components/product/product-description';
 
@@ -15,32 +13,29 @@ export async function generateMetadata({
 }: {
   params: { handle: string };
 }): Promise<Metadata> {
-  const product = await getPackage(params.handle);
+  const product = await getPackage(Number(params.handle));
 
   if (!product) return notFound();
 
-  const { url, width, height, altText: alt } = product.featuredImage || {};
-  const indexable = !product.tags.includes(HIDDEN_PRODUCT_TAG);
-
   return {
-    title: product.seo.title || product.title,
-    description: product.seo.description || product.description,
+    title: product.name,
+    description: product.description,
     robots: {
-      index: indexable,
-      follow: indexable,
+      index: true,
+      follow: true,
       googleBot: {
-        index: indexable,
-        follow: indexable
+        index: true,
+        follow: true
       }
     },
-    openGraph: url
+    openGraph: product.image
       ? {
           images: [
             {
-              url,
-              width,
-              height,
-              alt
+              url: product.image,
+              // width,
+              // height,
+              alt: product.name
             }
           ]
         }
@@ -49,24 +44,22 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
-  const product = await getPackage(params.handle);
+  const product = await getPackage(Number(params.handle));
 
   if (!product) return notFound();
 
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.title,
+    name: product.name,
     description: product.description,
-    image: product.featuredImage.url,
+    image: product.image,
     offers: {
       '@type': 'AggregateOffer',
-      availability: product.availableForSale
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-      priceCurrency: product.priceRange.minVariantPrice.currencyCode,
-      highPrice: product.priceRange.maxVariantPrice.amount,
-      lowPrice: product.priceRange.minVariantPrice.amount
+      availability: 'https://schema.org/InStock',
+      // todo: fix currency
+      priceCurrency: 'USD',
+      price: product.total_price
     }
   };
 
@@ -82,10 +75,16 @@ export default async function ProductPage({ params }: { params: { handle: string
         <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 dark:border-neutral-800 dark:bg-black md:p-12 lg:flex-row lg:gap-8">
           <div className="h-full w-full basis-full lg:basis-4/6">
             <Gallery
-              images={product.images.map((image: Image) => ({
-                src: image.url,
-                altText: image.altText
-              }))}
+              images={
+                product.image
+                  ? [
+                      {
+                        src: product.image,
+                        altText: product.name
+                      }
+                    ]
+                  : []
+              }
             />
           </div>
 
