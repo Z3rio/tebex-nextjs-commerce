@@ -11,6 +11,11 @@ module.exports = {
         protocol: 'https',
         hostname: 'cdn.shopify.com',
         pathname: '/s/files/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cloudfront.net',
+        pathname: '/packages/images/**'
       }
     ]
   },
