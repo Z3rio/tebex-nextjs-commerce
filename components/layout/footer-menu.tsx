@@ -31,9 +31,30 @@ const FooterMenuItem = ({ item }: { item: Menu }) => {
   );
 };
 
-export default function FooterMenu({ menu }: { menu: Menu[] }) {
-  if (!menu.length) return null;
+const menu: Menu[] = [
+  {
+    title: 'Homepage',
+    path: '/'
+  },
+  {
+    title: 'About',
+    path: '/about'
+  },
+  {
+    title: 'Terms & Conditions',
+    path: '/terms-conditions'
+  },
+  {
+    title: 'Privacy Policy',
+    path: '/privacy-policy'
+  },
+  {
+    title: 'FAQ',
+    path: '/frequently-asked-questions'
+  }
+];
 
+export default function FooterMenu() {
   return (
     <nav>
       <ul>
