@@ -1,5 +1,6 @@
 'use client';
 
+import { menu } from '@lib/constants';
 import { Menu } from '@lib/tebex/types';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -30,29 +31,6 @@ const FooterMenuItem = ({ item }: { item: Menu }) => {
     </li>
   );
 };
-
-const menu: Menu[] = [
-  {
-    title: 'Homepage',
-    path: '/'
-  },
-  {
-    title: 'About',
-    path: '/about'
-  },
-  {
-    title: 'Terms & Conditions',
-    path: '/terms-conditions'
-  },
-  {
-    title: 'Privacy Policy',
-    path: '/privacy-policy'
-  },
-  {
-    title: 'FAQ',
-    path: '/frequently-asked-questions'
-  }
-];
 
 export default function FooterMenu() {
   return (

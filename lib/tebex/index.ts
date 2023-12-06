@@ -64,8 +64,11 @@ export async function getAuthUrl(basketId: string, returnUrl: string): Promise<A
   return res;
 }
 
-export async function removeFromBasket(basketId: string, packageId: number): Promise<Basket> {
-  const res = await simpleRequest<Data<Basket>>(
+export async function removeFromBasket(
+  basketId: string,
+  packageId: number
+): Promise<Data<Basket> | Message> {
+  const res = await simpleRequest<Data<Basket> | Message>(
     `${baseUrl}/baskets/${basketId}/packages/remove`,
     {
       package_id: packageId
@@ -74,7 +77,24 @@ export async function removeFromBasket(basketId: string, packageId: number): Pro
     { method: 'POST' }
   );
 
-  return res.data;
+  return res;
+}
+
+export async function updateQuantityInBasket(
+  basketId: string,
+  packageId: string,
+  newQuantity: number
+): Promise<Data<Basket> | Message> {
+  const res = await simpleRequest<Data<Basket> | Message>(
+    `${baseUrl}/baskets/${basketId}/packages/${packageId}`,
+    {
+      quantity: newQuantity
+    },
+    {},
+    { method: 'PUT' }
+  );
+
+  return res;
 }
 
 export async function getPage(handle: string): Promise<Page | undefined> {
@@ -95,7 +115,14 @@ export async function getPages(): Promise<Page[]> {
 
 export async function getBasket(basketId: string): Promise<Basket | undefined> {
   const res = await simpleRequest<Data<Basket>>(
-    `${baseUrl}/accounts/${publicApiKey}/baskets/${basketId}`
+    `${baseUrl}/accounts/${publicApiKey}/baskets/${basketId}`,
+    undefined,
+    {},
+    {
+      next: {
+        tags: [TAGS.cart]
+      }
+    }
   );
 
   return res.data;
@@ -139,6 +166,7 @@ export async function simpleRequest<T>(
       ...(headers ? headers : {})
     },
     method: 'GET',
+    cache: 'no-store',
     ...(custom ? custom : {})
   });
 

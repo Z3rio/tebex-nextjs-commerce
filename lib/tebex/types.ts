@@ -65,6 +65,7 @@ export type Category = BaseItem & {
 
 export type BasketPackage = BaseItem & {
   description: string;
+  image?: string;
   in_basket: InBasket;
 };
 

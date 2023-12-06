@@ -1,7 +1,7 @@
 'use client';
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import type { CartItem } from '@lib/tebex/types';
+import { BasketPackage } from '@lib/tebex/types';
 import clsx from 'clsx';
 import { updateItemQuantity } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
@@ -37,13 +37,19 @@ function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
   );
 }
 
-export function EditItemQuantityButton({ item, type }: { item: CartItem; type: 'plus' | 'minus' }) {
+export function EditItemQuantityButton({
+  item,
+  type
+}: {
+  item: BasketPackage;
+  type: 'plus' | 'minus';
+}) {
   const [message, formAction] = useFormState(updateItemQuantity, null);
   const payload = {
-    lineId: item.id,
-    variantId: item.merchandise.id,
-    quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
+    lineId: item.id.toString(),
+    quantity: type === 'plus' ? item.in_basket.quantity + 1 : item.in_basket.quantity - 1
   };
+
   const actionWithVariant = formAction.bind(null, payload);
 
   return (

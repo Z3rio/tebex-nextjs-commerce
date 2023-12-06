@@ -1,7 +1,14 @@
 'use server';
 
 import { TAGS } from '@lib/constants';
-import { addToBasket, createBasket, getAuthUrl, getBasket } from '@lib/tebex';
+import {
+  addToBasket,
+  createBasket,
+  getAuthUrl,
+  getBasket,
+  removeFromBasket,
+  updateQuantityInBasket
+} from '@lib/tebex';
 import { PackageType } from '@lib/tebex/types';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -60,7 +67,7 @@ export async function removeItem(prevState: any, lineId: string) {
   }
 
   try {
-    await removeFromCart(cartId, [lineId]);
+    await removeFromBasket(cartId, Number(lineId));
     revalidateTag(TAGS.cart);
   } catch (e) {
     return 'Error removing item from cart';
@@ -71,7 +78,6 @@ export async function updateItemQuantity(
   prevState: any,
   payload: {
     lineId: string;
-    variantId: string;
     quantity: number;
   }
 ) {
@@ -81,22 +87,16 @@ export async function updateItemQuantity(
     return 'Missing cart ID';
   }
 
-  const { lineId, variantId, quantity } = payload;
+  const { lineId, quantity } = payload;
 
   try {
     if (quantity === 0) {
-      await removeFromCart(cartId, [lineId]);
+      await removeFromBasket(cartId, Number(lineId));
       revalidateTag(TAGS.cart);
       return;
     }
 
-    await updateCart(cartId, [
-      {
-        id: lineId,
-        merchandiseId: variantId,
-        quantity
-      }
-    ]);
+    await updateQuantityInBasket(cartId, lineId, quantity);
     revalidateTag(TAGS.cart);
   } catch (e) {
     return 'Error updating item quantity';
