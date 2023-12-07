@@ -2,7 +2,7 @@
 
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { Basket } from '@lib/tebex/types';
+import { Basket, BasketPackage } from '@lib/tebex/types';
 import Price from 'components/price';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,22 +15,31 @@ import OpenCart from './open-cart';
 
 export default function CartModal({ cart }: { cart: Basket | undefined }) {
   const [isOpen, setIsOpen] = useState(false);
-  const quantityRef = useRef(cart?.packages.length);
+  const quantityRef = useRef(getPackagesQuantity(cart?.packages));
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
 
+  function getPackagesQuantity(packages: BasketPackage[] | undefined): number {
+    if (!packages) {
+      return 0;
+    }
+
+    return packages.reduce((total, curr) => total + curr.in_basket.quantity, 0);
+  }
+
   useEffect(() => {
     // Open cart modal when quantity changes.
-    if (cart && cart.packages.length !== quantityRef.current) {
+    if (cart) {
       // But only if it's not already open (quantity also changes when editing items in cart).
-      if (!isOpen) {
+      const currQuantity = getPackagesQuantity(cart.packages);
+      if (!isOpen && currQuantity !== quantityRef.current) {
         setIsOpen(true);
       }
 
       // Always update the quantity reference
-      quantityRef.current = cart?.packages.length;
+      quantityRef.current = currQuantity;
     }
-  }, [isOpen, cart, cart?.packages.length, quantityRef]);
+  }, [isOpen, cart, cart?.packages, quantityRef]);
 
   return (
     <>
