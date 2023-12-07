@@ -1,7 +1,9 @@
-import { menu } from '@lib/constants';
+import { navMenu } from '@lib/constants';
 import { Menu } from '@lib/tebex/types';
 import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
+import Login from 'components/login';
+import OpenLogin from 'components/login/open-login';
 import LogoSquare from 'components/logo-square';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -13,7 +15,7 @@ export default async function Navbar() {
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
-        <MobileMenu menu={menu} />
+        <MobileMenu menu={navMenu} />
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full md:w-1/3">
@@ -23,9 +25,9 @@ export default async function Navbar() {
               {SITE_NAME}
             </div>
           </Link>
-          {menu.length ? (
+          {navMenu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menu.map((item: Menu) => (
+              {navMenu.map((item: Menu) => (
                 <li key={item.title}>
                   <Link
                     href={item.path}
@@ -42,6 +44,11 @@ export default async function Navbar() {
           <Search />
         </div>
         <div className="flex justify-end md:w-1/3">
+          <Suspense fallback={<OpenLogin />}>
+            <Login />
+          </Suspense>
+        </div>
+        <div className="ml-2">
           <Suspense fallback={<OpenCart />}>
             <Cart />
           </Suspense>

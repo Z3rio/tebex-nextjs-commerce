@@ -32,3 +32,18 @@ export const menu: Menu[] = [
     path: '/frequently-asked-questions'
   }
 ];
+
+export const navMenu: Menu[] = [
+  {
+    title: 'Homepage',
+    path: '/'
+  },
+  {
+    title: 'Products',
+    path: '/search'
+  },
+  {
+    title: 'Documentation',
+    path: 'https://docs.zerio-scripts.com/'
+  }
+];
