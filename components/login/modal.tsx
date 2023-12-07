@@ -1,6 +1,7 @@
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
+import clsx from 'clsx';
 import { Fragment, useState } from 'react';
 import CloseLogin from './close-login';
 import OpenLogin from './open-login';
@@ -10,6 +11,9 @@ export default function LoginModal({ authLink }: { authLink: string }) {
 
   const openLogin = () => setIsOpen(true);
   const closeLogin = () => setIsOpen(false);
+
+  const buttonClasses =
+    'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white';
 
   return (
     <>
@@ -48,7 +52,15 @@ export default function LoginModal({ authLink }: { authLink: string }) {
               </div>
 
               <a href={authLink}>
-                <button>Open auth link</button>
+                <button
+                  aria-label="Open auth link"
+                  className={clsx(buttonClasses, {
+                    'mt-8': true,
+                    'hover:opacity-90': true
+                  })}
+                >
+                  Open auth link
+                </button>
               </a>
             </Dialog.Panel>
           </Transition.Child>

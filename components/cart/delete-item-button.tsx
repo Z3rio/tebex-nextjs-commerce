@@ -1,7 +1,7 @@
 'use client';
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import type { CartItem } from '@lib/tebex/types';
+import { BasketPackage } from '@lib/tebex/types';
 import clsx from 'clsx';
 import { removeItem } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
@@ -34,10 +34,10 @@ function SubmitButton() {
   );
 }
 
-export function DeleteItemButton({ item }: { item: CartItem }) {
+export function DeleteItemButton({ item }: { item: BasketPackage }) {
   const [message, formAction] = useFormState(removeItem, null);
   const itemId = item.id;
-  const actionWithVariant = formAction.bind(null, itemId);
+  const actionWithVariant = formAction.bind(null, itemId.toString());
 
   return (
     <form action={actionWithVariant}>
