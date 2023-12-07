@@ -2,7 +2,7 @@ import { TAGS } from '@lib/constants';
 import { revalidateTag } from 'next/cache';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { AuthUrl, Basket, Category, Data, Message, Package, PackageType, Page } from './types';
+import { AuthUrl, Basket, Category, Data, Message, Package, PackageType } from './types';
 
 const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
 const baseUrl = 'https://headless.tebex.io/api';
@@ -95,22 +95,6 @@ export async function updateQuantityInBasket(
   );
 
   return res;
-}
-
-export async function getPage(handle: string): Promise<Page | undefined> {
-  // const res = await shopifyFetch<ShopifyPageOperation>({
-  //   query: getPageQuery,
-  //   variables: { handle }
-  // });
-  // return res.body.data.pageByHandle;
-  return undefined;
-}
-export async function getPages(): Promise<Page[]> {
-  // const res = await shopifyFetch<ShopifyPagesOperation>({
-  //   query: getPagesQuery
-  // });
-  // return removeEdgesAndNodes(res.body.data.pages);
-  return [];
 }
 
 export async function getBasket(basketId: string): Promise<Basket | undefined> {

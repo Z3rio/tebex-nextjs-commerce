@@ -1,11 +1,11 @@
-import { getCollection } from '@lib/tebex';
+import { getCategory } from '@lib/tebex';
 import OpengraphImage from 'components/opengraph-image';
 
 export const runtime = 'edge';
 
 export default async function Image({ params }: { params: { collection: string } }) {
-  const collection = await getCollection(params.collection);
-  const title = collection?.seo?.title || collection?.title;
+  const collection = await getCategory(Number(params.collection));
+  const title = collection ? collection.name : 'Unknown Name';
 
   return await OpengraphImage({ title });
 }

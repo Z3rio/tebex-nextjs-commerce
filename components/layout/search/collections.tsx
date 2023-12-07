@@ -1,12 +1,20 @@
 import clsx from 'clsx';
 import { Suspense } from 'react';
 
-import { getCollections } from '@lib/tebex';
-import FilterList from './filter';
+import { getCategories } from '@lib/tebex';
+import FilterList, { PathFilterItem } from './filter';
 
 async function CollectionList() {
-  const collections = await getCollections();
-  return <FilterList list={collections} title="Collections" />;
+  const categories: PathFilterItem[] = [
+    {
+      title: 'All',
+      path: '/search'
+    },
+    ...(await getCategories()).map((c) => {
+      return { title: c.name, path: `/search/${c.id}` };
+    })
+  ] as PathFilterItem[];
+  return <FilterList list={categories} title="Categories" />;
 }
 
 const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded';

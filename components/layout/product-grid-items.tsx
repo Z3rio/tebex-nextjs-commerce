@@ -1,22 +1,24 @@
-import { Product } from '@lib/tebex/types';
+import { Package } from '@lib/tebex/types';
 import Grid from 'components/grid';
 import { GridTileImage } from 'components/grid/tile';
 import Link from 'next/link';
+import placeholderImage from '../../assets/placeholder-image.webp';
 
-export default function ProductGridItems({ products }: { products: Product[] }) {
+export default function ProductGridItems({ products }: { products: Package[] }) {
   return (
     <>
       {products.map((product) => (
-        <Grid.Item key={product.handle} className="animate-fadeIn">
-          <Link className="relative inline-block h-full w-full" href={`/product/${product.handle}`}>
+        <Grid.Item key={product.id} className="animate-fadeIn">
+          <Link className="relative inline-block h-full w-full" href={`/product/${product.id}`}>
             <GridTileImage
-              alt={product.title}
+              alt={product.name}
               label={{
-                title: product.title,
-                amount: product.priceRange.maxVariantPrice.amount,
-                currencyCode: product.priceRange.maxVariantPrice.currencyCode
+                title: product.name,
+                amount: product.total_price.toString(),
+                // todo: fix currency
+                currencyCode: 'USD'
               }}
-              src={product.featuredImage?.url}
+              src={product.image ?? placeholderImage}
               fill
               sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
             />

@@ -1,7 +1,5 @@
-import { sorting } from '@lib/constants';
-// import Footer from 'components/layout/footer';
+import Footer from 'components/layout/footer';
 import Collections from 'components/layout/search/collections';
-import FilterList from 'components/layout/search/filter';
 import { Suspense } from 'react';
 
 export default function SearchLayout({ children }: { children: React.ReactNode }) {
@@ -12,11 +10,8 @@ export default function SearchLayout({ children }: { children: React.ReactNode }
           <Collections />
         </div>
         <div className="order-last min-h-screen w-full md:order-none">{children}</div>
-        <div className="order-none flex-none md:order-last md:w-[125px]">
-          <FilterList list={sorting} title="Sort by" />
-        </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </Suspense>
   );
 }
