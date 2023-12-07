@@ -1,28 +1,15 @@
-import { getAuthUrl, getBasket } from '@lib/tebex';
-import { cookies } from 'next/headers';
-import { notFound } from 'next/navigation';
+'use server';
+
+import { tryFetchAuthUrl } from './actions';
 import LoginModal from './modal';
+import OpenLogin from './open-login';
 
 export default async function Login() {
-  const cartId = cookies().get('cartId')?.value;
-  let cart;
+  const authUrl = await tryFetchAuthUrl();
 
-  if (cartId) {
-    cart = await getBasket(cartId);
+  if (!authUrl) {
+    return <OpenLogin />;
   }
 
-  if (cart) {
-    const authUrls = await getAuthUrl(
-      cart.ident,
-      process.env.NODE_ENV == 'development'
-        ? 'http://localhost:3000'
-        : process.env.SITE_URL ?? 'about:blank'
-    );
-
-    if (authUrls[0] !== undefined) {
-      return <LoginModal authLink={authUrls[0].url} />;
-    }
-  }
-
-  return notFound;
+  return <LoginModal authLink={authUrl} />;
 }

@@ -5,7 +5,7 @@ import { Fragment, useState } from 'react';
 import CloseLogin from './close-login';
 import OpenLogin from './open-login';
 
-export default function CartModal({ authLink }: { authLink: string }) {
+export default function LoginModal({ authLink }: { authLink: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const openLogin = () => setIsOpen(true);
@@ -13,7 +13,7 @@ export default function CartModal({ authLink }: { authLink: string }) {
 
   return (
     <>
-      <button aria-label="Open cart" onClick={openLogin}>
+      <button aria-label="Open login" onClick={openLogin}>
         <OpenLogin />
       </button>
       <Transition show={isOpen}>
@@ -42,7 +42,7 @@ export default function CartModal({ authLink }: { authLink: string }) {
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold">Login</p>
 
-                <button aria-label="Close cart" onClick={closeLogin}>
+                <button aria-label="Close login" onClick={closeLogin}>
                   <CloseLogin />
                 </button>
               </div>
