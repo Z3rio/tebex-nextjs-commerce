@@ -31,12 +31,12 @@ export default function CartModal({ authLink }: { authLink: string }) {
           </Transition.Child>
           <Transition.Child
             as={Fragment}
-            enter="transition-all ease-in-out duration-300"
-            enterFrom="translate-x-full"
-            enterTo="translate-x-0"
-            leave="transition-all ease-in-out duration-200"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
+            enter="transition-all ease-in-out duration-400"
+            enterFrom="scale-0"
+            enterTo="scale-1"
+            leave="transition-all ease-in-out duration-300"
+            leaveFrom="scale-1"
+            leaveTo="scale-0"
           >
             <Dialog.Panel className="fixed left-1/2 top-1/2 flex h-fit max-h-[90vh] w-full -translate-x-1/2 -translate-y-1/2 flex-col border-l border-neutral-200 bg-white/80 p-6 text-black backdrop-blur-xl dark:border-neutral-700 dark:bg-black/80 dark:text-white md:w-[390px]">
               <div className="flex items-center justify-between">
