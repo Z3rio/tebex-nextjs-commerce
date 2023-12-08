@@ -4,7 +4,6 @@ import { TAGS } from '@lib/constants';
 import {
   addToBasket,
   createBasket,
-  getAuthUrl,
   getBasket,
   removeFromBasket,
   updateQuantityInBasket
@@ -42,18 +41,7 @@ export async function addItem(
     const addResp = await addToBasket(cartId, Number(data.packageId), data.packageType);
 
     if (addResp && 'status' in addResp && addResp.status == 422) {
-      const authUrls = await getAuthUrl(
-        cartId,
-        process.env.NODE_ENV == 'development'
-          ? 'http://localhost:3000'
-          : process.env.SITE_URL ?? 'about:blank'
-      );
-
-      if (authUrls[0] !== undefined) {
-        return 'You must login before doing this';
-      } else {
-        return 'Could not find any Auth URLs';
-      }
+      return 'You must login before doing this';
     } else {
       revalidateTag(TAGS.cart);
       return true;
