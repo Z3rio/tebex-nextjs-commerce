@@ -27,7 +27,6 @@ export async function addItem(
 
     if (cart) {
       cartId = cart.ident.toString();
-      cookies().set('cartId', cartId);
     }
   }
 

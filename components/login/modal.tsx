@@ -1,13 +1,25 @@
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
+import { Basket } from '@lib/tebex/types';
 import clsx from 'clsx';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { createNewBasket, removeBasket } from './actions';
 import CloseLogin from './close-login';
 import OpenLogin from './open-login';
 
-export default function LoginModal({ authLink }: { authLink: string }) {
+export default function LoginModal({ authLink, cart }: { authLink?: string; cart?: Basket }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!cart) {
+      createNewBasket();
+    }
+  }, [cart]);
+
+  if (!cart) {
+    return <OpenLogin />;
+  }
 
   const openLogin = () => setIsOpen(true);
   const closeLogin = () => setIsOpen(false);
@@ -51,17 +63,37 @@ export default function LoginModal({ authLink }: { authLink: string }) {
                 </button>
               </div>
 
-              <a href={authLink}>
-                <button
-                  aria-label="Open auth link"
-                  className={clsx(buttonClasses, {
-                    'mt-8': true,
-                    'hover:opacity-90': true
-                  })}
-                >
-                  Open auth link
-                </button>
-              </a>
+              {cart && cart.username ? (
+                <>
+                  <h1>You are currently logged in as:</h1>
+                  <p>
+                    {cart.username} <i>({cart.username_id})</i>
+                  </p>
+
+                  <button
+                    aria-label="Login"
+                    className={clsx(buttonClasses, {
+                      'mt-8': true,
+                      'hover:opacity-90': true
+                    })}
+                    onClick={async () => await removeBasket()}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <a href={authLink}>
+                  <button
+                    aria-label="Login"
+                    className={clsx(buttonClasses, {
+                      'mt-8': true,
+                      'hover:opacity-90': true
+                    })}
+                  >
+                    Login
+                  </button>
+                </a>
+              )}
             </Dialog.Panel>
           </Transition.Child>
         </Dialog>
