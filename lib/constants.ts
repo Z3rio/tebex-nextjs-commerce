@@ -3,7 +3,8 @@ import { Menu } from './tebex/types';
 export const TAGS = {
   collections: 'collections',
   products: 'products',
-  cart: 'cart'
+  cart: 'cart',
+  webstoreData: 'webstoreData'
 };
 
 export const HIDDEN_PRODUCT_TAG = 'nextjs-frontend-hidden';

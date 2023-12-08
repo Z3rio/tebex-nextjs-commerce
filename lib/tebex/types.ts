@@ -228,3 +228,15 @@ export interface AuthUrl {
   name: string;
   url: string;
 }
+
+export interface Webstore {
+  id: number;
+  description: string;
+  name: string;
+  webstore_url: string;
+  currency: string;
+  lang: string;
+  logo?: string;
+  platform_type: string;
+  created_at?: string;
+}

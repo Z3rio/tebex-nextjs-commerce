@@ -1,5 +1,5 @@
 import { TAGS } from '@lib/constants';
-import { AuthUrl, Basket, Category, Data, Message, Package, PackageType } from './types';
+import { AuthUrl, Basket, Category, Data, Message, Package, PackageType, Webstore } from './types';
 
 const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
 const baseUrl = 'https://headless.tebex.io/api';
@@ -98,6 +98,21 @@ export async function getCategory(
       ? 1
       : 0
     ).toString()}`
+  );
+
+  return res.data;
+}
+
+export async function getWebstoreData(): Promise<Webstore> {
+  const res = await simpleRequest<Data<Webstore>>(
+    `${baseUrl}/accounts/${publicApiKey}`,
+    undefined,
+    {},
+    {
+      next: {
+        tags: [TAGS.webstoreData]
+      }
+    }
   );
 
   return res.data;
