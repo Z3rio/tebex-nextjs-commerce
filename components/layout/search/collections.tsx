@@ -10,9 +10,19 @@ async function CollectionList() {
       title: 'All',
       path: '/search'
     },
-    ...(await getCategories()).map((c) => {
-      return { title: c.name, path: `/search/${c.id}` };
-    })
+    ...(await getCategories(true, (c) => c.packages.length !== 0))
+      .sort((a, b) => {
+        if (a.order < b.order) {
+          return -1;
+        } else if (a.order > b.order) {
+          return 1;
+        }
+
+        return 0;
+      })
+      .map((c) => {
+        return { title: c.name, path: `/search/${c.id}` };
+      })
   ] as PathFilterItem[];
   return <FilterList list={categories} title="Categories" />;
 }

@@ -103,7 +103,10 @@ export async function getCategory(
   return res.data;
 }
 
-export async function getCategories(includePackages = false): Promise<Category[]> {
+export async function getCategories(
+  includePackages = false,
+  checker: (category: Category) => boolean = () => true
+): Promise<Category[]> {
   const res = await simpleRequest<Data<Category[]>>(
     `${baseUrl}/accounts/${publicApiKey}/categories?includePackages=${(includePackages
       ? 1
@@ -111,7 +114,7 @@ export async function getCategories(includePackages = false): Promise<Category[]
     ).toString()}`
   );
 
-  return res.data;
+  return res.data.filter(checker);
 }
 
 export async function simpleRequest<T>(
