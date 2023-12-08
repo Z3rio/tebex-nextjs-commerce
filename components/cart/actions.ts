@@ -56,7 +56,7 @@ export async function addItem(
       }
     } else {
       revalidateTag(TAGS.cart);
-      return 'Ran successfully';
+      return true;
     }
   } catch (e) {
     return 'Error adding item to cart';

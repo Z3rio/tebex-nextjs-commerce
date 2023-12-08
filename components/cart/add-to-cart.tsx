@@ -5,6 +5,8 @@ import { PackageType } from '@lib/tebex/types';
 import clsx from 'clsx';
 import { addItem } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function SubmitButton() {
@@ -45,12 +47,21 @@ export function AddToCart({
     packageType
   });
 
+  useEffect(() => {
+    if (message && message !== true) {
+      enqueueSnackbar(message.toString(), {
+        variant: 'error',
+        autoHideDuration: 5000
+      });
+    }
+  }, [message]);
+
   return (
-    <form action={actionWithVariant}>
-      <SubmitButton />
-      <p aria-live="polite" className="sr-only" role="status">
-        {message}
-      </p>
-    </form>
+    <>
+      <SnackbarProvider />
+      <form action={actionWithVariant}>
+        <SubmitButton />
+      </form>
+    </>
   );
 }
