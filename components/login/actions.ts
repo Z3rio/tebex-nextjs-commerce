@@ -8,11 +8,14 @@ export async function tryFetchAuthUrl(): Promise<string | undefined> {
   const cartId = cookies().get('cartId')?.value;
   let cart: Basket | undefined;
 
-  if (!cartId) {
-    cart = await createBasket();
-    cookies().set('cartId', cart.ident);
-  } else {
+  if (cartId) {
     cart = await getBasket(cartId);
+  } else {
+    cart = await createBasket();
+
+    if (cart) {
+      cookies().set('cartId', cart.ident);
+    }
   }
 
   if (cart) {

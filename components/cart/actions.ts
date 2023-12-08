@@ -9,7 +9,7 @@ import {
   removeFromBasket,
   updateQuantityInBasket
 } from '@lib/tebex';
-import { PackageType } from '@lib/tebex/types';
+import { Basket, PackageType } from '@lib/tebex/types';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -18,26 +18,31 @@ export async function addItem(
   data: { packageId: string; packageType: PackageType }
 ) {
   let cartId = cookies().get('cartId')?.value;
-  let cart;
+  let cart: Basket | undefined;
 
   if (cartId) {
     cart = await getBasket(cartId);
-  }
-
-  if (!cartId || !cart) {
+  } else {
     cart = await createBasket();
-    cartId = cart.ident.toString();
-    cookies().set('cartId', cartId);
+
+    if (cart) {
+      cartId = cart.ident.toString();
+      cookies().set('cartId', cartId);
+    }
   }
 
   if (!data.packageId) {
     return 'Missing product variant ID';
   }
 
+  if (!cartId || !cart) {
+    return 'Missing cart id or cart data';
+  }
+
   try {
     const addResp = await addToBasket(cartId, Number(data.packageId), data.packageType);
 
-    if ('status' in addResp && addResp.status == 422) {
+    if (addResp && 'status' in addResp && addResp.status == 422) {
       const authUrls = await getAuthUrl(
         cartId,
         process.env.NODE_ENV == 'development'

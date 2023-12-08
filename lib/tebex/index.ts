@@ -4,7 +4,7 @@ import { AuthUrl, Basket, Category, Data, Message, Package, PackageType, Webstor
 const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
 const baseUrl = 'https://headless.tebex.io/api';
 
-export async function createBasket(): Promise<Basket> {
+export async function createBasket(): Promise<Basket | undefined> {
   const res = await simpleRequest<Data<Basket>>(
     `${baseUrl}/accounts/${publicApiKey}/baskets`,
     {},
@@ -12,14 +12,18 @@ export async function createBasket(): Promise<Basket> {
     { method: 'POST' }
   );
 
-  return res.data;
+  if (res) {
+    return res.data;
+  } else {
+    return undefined;
+  }
 }
 
 export async function addToBasket(
   basketId: string,
   packageId: number,
   packageType: PackageType
-): Promise<Data<Basket> | Message> {
+): Promise<Data<Basket> | Message | undefined> {
   const res = await simpleRequest<Data<Basket> | Message>(
     `${baseUrl}/baskets/${basketId}/packages`,
     {
@@ -38,13 +42,17 @@ export async function getAuthUrl(basketId: string, returnUrl: string): Promise<A
     `${baseUrl}/accounts/${publicApiKey}/baskets/${basketId}/auth?returnUrl=${returnUrl}`
   );
 
-  return res;
+  if (res) {
+    return res;
+  } else {
+    return [];
+  }
 }
 
 export async function removeFromBasket(
   basketId: string,
   packageId: number
-): Promise<Data<Basket> | Message> {
+): Promise<Data<Basket> | Message | undefined> {
   const res = await simpleRequest<Data<Basket> | Message>(
     `${baseUrl}/baskets/${basketId}/packages/remove`,
     {
@@ -61,7 +69,7 @@ export async function updateQuantityInBasket(
   basketId: string,
   packageId: string,
   newQuantity: number
-): Promise<Data<Basket> | Message> {
+): Promise<Data<Basket> | Message | undefined> {
   const res = await simpleRequest<Data<Basket> | Message>(
     `${baseUrl}/baskets/${basketId}/packages/${packageId}`,
     {
@@ -86,7 +94,11 @@ export async function getBasket(basketId: string): Promise<Basket | undefined> {
     }
   );
 
-  return res.data;
+  if (res) {
+    return res.data;
+  } else {
+    return undefined;
+  }
 }
 
 export async function getCategory(
@@ -100,10 +112,14 @@ export async function getCategory(
     ).toString()}`
   );
 
-  return res.data;
+  if (res) {
+    return res.data;
+  } else {
+    return undefined;
+  }
 }
 
-export async function getWebstoreData(): Promise<Webstore> {
+export async function getWebstoreData(): Promise<Webstore | undefined> {
   const res = await simpleRequest<Data<Webstore>>(
     `${baseUrl}/accounts/${publicApiKey}`,
     undefined,
@@ -115,7 +131,11 @@ export async function getWebstoreData(): Promise<Webstore> {
     }
   );
 
-  return res.data;
+  if (res) {
+    return res.data;
+  } else {
+    return undefined;
+  }
 }
 
 export async function getCategories(
@@ -129,7 +149,11 @@ export async function getCategories(
     ).toString()}`
   );
 
-  return res.data.filter(checker);
+  if (res) {
+    return res.data.filter(checker);
+  } else {
+    return [];
+  }
 }
 
 export async function simpleRequest<T>(
@@ -137,35 +161,49 @@ export async function simpleRequest<T>(
   body?: Record<string, unknown>,
   headers?: Record<string, unknown>,
   custom?: Record<string, unknown>
-) {
-  const res = await fetch(url, {
-    body: body ? JSON.stringify(body) : undefined,
-    headers: {
-      'Content-Type': 'application/json; charset=UTF8',
-      ...(headers ? headers : {})
-    },
-    method: 'GET',
-    cache: 'no-store',
-    ...(custom ? custom : {})
-  });
+): Promise<T | undefined> {
+  try {
+    const res = await fetch(url, {
+      body: body ? JSON.stringify(body) : undefined,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF8',
+        ...(headers ? headers : {})
+      },
+      method: 'GET',
+      cache: 'no-store',
+      ...(custom ? custom : {})
+    });
 
-  return (await res.json()) as T;
+    return (await res.json()) as T;
+  } catch (e) {
+    console.warn(e);
+    return undefined;
+  }
 }
 
 export async function getPackages(query?: string, reverse = false): Promise<Package[]> {
   query = query ? query.toLowerCase() : query;
 
   const res = await simpleRequest<Data<Package[]>>(`${baseUrl}/accounts/${publicApiKey}/packages`);
-  const data = res.data;
-  const reshaped = reverse ? data.reverse() : data;
 
-  return reshaped.filter((pkg) => query == undefined || pkg.name.toLowerCase().includes(query));
+  if (res) {
+    const data = res.data;
+    const reshaped = reverse ? data.reverse() : data;
+
+    return reshaped.filter((pkg) => query == undefined || pkg.name.toLowerCase().includes(query));
+  } else {
+    return [];
+  }
 }
 
-export async function getPackage(id: number): Promise<Package> {
+export async function getPackage(id: number): Promise<Package | undefined> {
   const res = await simpleRequest<Data<Package>>(
     `${baseUrl}/accounts/${publicApiKey}/packages/${id}`
   );
 
-  return res.data;
+  if (res) {
+    return res.data;
+  } else {
+    return undefined;
+  }
 }

@@ -15,7 +15,8 @@ export default async function SearchPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { q: searchValue } = searchParams as { [key: string]: string };
-  const { currency } = await getWebstoreData();
+  const webstoreData = await getWebstoreData();
+  const currency = webstoreData ? webstoreData.currency : 'EUR';
 
   const products = await getPackages(searchValue);
   const resultsText = products.length > 1 ? 'results' : 'result';

@@ -29,7 +29,8 @@ export default async function CategoryPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const product = await getCategory(Number(params.collection), true);
-  const { currency } = await getWebstoreData();
+  const webstoreData = await getWebstoreData();
+  const currency = webstoreData ? webstoreData.currency : 'EUR';
 
   if (!product) {
     return notFound;

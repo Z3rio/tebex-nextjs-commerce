@@ -46,7 +46,8 @@ export async function ThreeItemGrid() {
     Number(process.env.HOMEPAGE_THREE_ITEM_GRID_CATEGORY),
     true
   );
-  const { currency } = await getWebstoreData();
+  const webstoreData = await getWebstoreData();
+  const currency = webstoreData ? webstoreData.currency : 'EUR';
 
   if (
     !homepageItems ||

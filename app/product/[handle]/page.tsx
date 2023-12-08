@@ -47,7 +47,8 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
   const product = await getPackage(Number(params.handle));
-  const { currency } = await getWebstoreData();
+  const webstoreData = await getWebstoreData();
+  const currency = webstoreData ? webstoreData.currency : 'EUR';
 
   if (!product) return notFound();
 
