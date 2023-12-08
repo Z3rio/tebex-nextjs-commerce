@@ -1,16 +1,10 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
   extends: ['next', 'prettier'],
-  plugins: ['unicorn'],
+  plugins: ['unicorn', '@typescript-eslint'],
   rules: {
-    'no-unused-vars': [
-      'error',
-      {
-        args: 'after-used',
-        caughtErrors: 'none',
-        ignoreRestSiblings: true,
-        vars: 'all'
-      }
-    ],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
     'prefer-const': 'error',
     'react-hooks/exhaustive-deps': 'error',
     'unicorn/filename-case': [
