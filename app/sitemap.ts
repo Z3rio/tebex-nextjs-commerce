@@ -19,20 +19,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString()
   }));
 
-  const collectionsPromise = getCategories().then((collections) =>
-    collections.map((collection) => ({
-      url: `${baseUrl}/search/${collection.id}`,
-      // todo: fix last modified date
-      lastModified: 'Unknown'
-    }))
-  );
+  const collectionsPromise = getCategories(true).then((collections) => {
+    return collections.map((collection) => {
+      const date = collection.packages.reduce((highest, curr) => {
+        const currDate = new Date(curr.updated_at).getTime();
 
-  const productsPromise = getPackages().then((products) =>
-    products.map((product) => ({
-      url: `${baseUrl}/product/${product.id}`,
-      lastModified: product.updated_at
-    }))
-  );
+        if (currDate > highest) {
+          return currDate;
+        } else {
+          return highest;
+        }
+      }, -Infinity);
+
+      return {
+        url: `${baseUrl}/search/${collection.id}`,
+        lastModified: new Date(date).toISOString()
+      };
+    });
+  });
+
+  const productsPromise = getPackages().then((products) => {
+    return products.map((product) => {
+      return {
+        url: `${baseUrl}/product/${product.id}`,
+        lastModified: product.updated_at
+      };
+    });
+  });
 
   let fetchedRoutes: Route[] = [];
 
