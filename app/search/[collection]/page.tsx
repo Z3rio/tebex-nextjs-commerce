@@ -1,4 +1,4 @@
-import { getCategory } from '@lib/tebex';
+import { getCategory, getWebstoreData } from '@lib/tebex';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -29,6 +29,7 @@ export default async function CategoryPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const product = await getCategory(Number(params.collection), true);
+  const { currency } = await getWebstoreData();
 
   if (!product) {
     return notFound;
@@ -40,7 +41,7 @@ export default async function CategoryPage({
         <p className="py-3 text-lg">{`No products found in this collection`}</p>
       ) : (
         <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={product.packages} />
+          <ProductGridItems products={product.packages} currency={currency} />
         </Grid>
       )}
     </section>

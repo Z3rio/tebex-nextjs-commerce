@@ -4,7 +4,13 @@ import { GridTileImage } from 'components/grid/tile';
 import Link from 'next/link';
 import placeholderImage from '../../assets/placeholder-image.webp';
 
-export default function ProductGridItems({ products }: { products: Package[] }) {
+export default function ProductGridItems({
+  products,
+  currency
+}: {
+  products: Package[];
+  currency: string;
+}) {
   return (
     <>
       {products.map((product) => (
@@ -15,8 +21,7 @@ export default function ProductGridItems({ products }: { products: Package[] }) 
               label={{
                 title: product.name,
                 amount: product.total_price.toString(),
-                // todo: fix currency
-                currencyCode: 'USD'
+                currencyCode: currency
               }}
               src={product.image ?? placeholderImage}
               fill

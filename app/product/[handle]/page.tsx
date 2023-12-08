@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 // import Footer from 'components/layout/footer';
-import { getPackage } from '@lib/tebex';
+import { getPackage, getWebstoreData } from '@lib/tebex';
 import Footer from 'components/layout/footer';
 import { Gallery } from 'components/product/gallery';
 import { ProductDescription } from 'components/product/product-description';
@@ -47,6 +47,7 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
   const product = await getPackage(Number(params.handle));
+  const { currency } = await getWebstoreData();
 
   if (!product) return notFound();
 
@@ -59,8 +60,7 @@ export default async function ProductPage({ params }: { params: { handle: string
     offers: {
       '@type': 'AggregateOffer',
       availability: 'https://schema.org/InStock',
-      // todo: fix currency
-      priceCurrency: 'USD',
+      priceCurrency: currency,
       price: product.total_price
     }
   };
@@ -91,7 +91,7 @@ export default async function ProductPage({ params }: { params: { handle: string
           </div>
 
           <div className="basis-full lg:basis-2/6">
-            <ProductDescription product={product} />
+            <ProductDescription product={product} currency={currency} />
           </div>
         </div>
       </div>

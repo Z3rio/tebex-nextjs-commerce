@@ -1,4 +1,4 @@
-import { getCategory } from '@lib/tebex';
+import { getCategory, getWebstoreData } from '@lib/tebex';
 import Link from 'next/link';
 import placeholderImage from '../assets/placeholder-image.webp';
 import { GridTileImage } from './grid/tile';
@@ -6,6 +6,7 @@ import { GridTileImage } from './grid/tile';
 export async function Carousel() {
   // Collections that start with `hidden-*` are hidden from the search page.
   const products = await getCategory(Number(process.env.CAROUSEL_ITEMS_CATEGORY), true);
+  const { currency } = await getWebstoreData();
 
   if (!products || !products.packages) return null;
 
@@ -26,8 +27,7 @@ export async function Carousel() {
                 label={{
                   title: product.name,
                   amount: product.total_price.toString(),
-                  // todo: fix currency fetching
-                  currencyCode: 'USD'
+                  currencyCode: currency
                 }}
                 src={product.image ?? placeholderImage}
                 fill

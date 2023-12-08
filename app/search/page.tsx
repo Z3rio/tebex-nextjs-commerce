@@ -1,4 +1,4 @@
-import { getPackages } from '@lib/tebex';
+import { getPackages, getWebstoreData } from '@lib/tebex';
 import Grid from 'components/grid';
 import ProductGridItems from 'components/layout/product-grid-items';
 
@@ -15,6 +15,7 @@ export default async function SearchPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { q: searchValue } = searchParams as { [key: string]: string };
+  const { currency } = await getWebstoreData();
 
   const products = await getPackages(searchValue);
   const resultsText = products.length > 1 ? 'results' : 'result';
@@ -31,7 +32,7 @@ export default async function SearchPage({
       ) : null}
       {products.length > 0 ? (
         <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
+          <ProductGridItems products={products} currency={currency} />
         </Grid>
       ) : null}
     </>

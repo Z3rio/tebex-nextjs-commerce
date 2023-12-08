@@ -13,7 +13,13 @@ import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
 import OpenCart from './open-cart';
 
-export default function CartModal({ cart }: { cart: Basket | undefined }) {
+export default function CartModal({
+  cart,
+  currency
+}: {
+  cart: Basket | undefined;
+  currency: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(getPackagesQuantity(cart?.packages));
   const openCart = () => setIsOpen(true);
@@ -120,8 +126,7 @@ export default function CartModal({ cart }: { cart: Basket | undefined }) {
                               <Price
                                 className="flex justify-end space-y-2 text-right text-sm"
                                 amount={(item.in_basket.quantity * item.in_basket.price).toString()}
-                                // todo: fix currency
-                                currencyCode="USD"
+                                currencyCode={currency}
                               />
                               <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                 <EditItemQuantityButton item={item} type="minus" />
@@ -142,21 +147,15 @@ export default function CartModal({ cart }: { cart: Basket | undefined }) {
                       <Price
                         className="text-right text-base text-black dark:text-white"
                         amount={cart.sales_tax.toString()}
-                        // todo: fix currency
-                        currencyCode="USD"
+                        currencyCode={currency}
                       />
                     </div>
-                    {/* <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-                      <p>Shipping</p>
-                      <p className="text-right">Calculated at checkout</p>
-                    </div> */}
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>Total</p>
                       <Price
                         className="text-right text-base text-black dark:text-white"
                         amount={cart.total_price.toString()}
-                        // todo: fix currency
-                        currencyCode="USD"
+                        currencyCode={currency}
                       />
                     </div>
                   </div>

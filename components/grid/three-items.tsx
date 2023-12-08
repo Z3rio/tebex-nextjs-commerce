@@ -1,4 +1,4 @@
-import { getCategory } from '@lib/tebex';
+import { getCategory, getWebstoreData } from '@lib/tebex';
 import type { Package } from '@lib/tebex/types';
 import { GridTileImage } from 'components/grid/tile';
 import Link from 'next/link';
@@ -7,11 +7,13 @@ import placeholderImage from '../../assets/placeholder-image.webp';
 function ThreeItemGridItem({
   item,
   size,
-  priority
+  priority,
+  currency
 }: {
   item: Package;
   size: 'full' | 'half';
   priority?: boolean;
+  currency: string;
 }) {
   return (
     <div
@@ -30,8 +32,7 @@ function ThreeItemGridItem({
             position: size === 'full' ? 'center' : 'bottom',
             title: item.name,
             amount: item.total_price.toString(),
-            // todo: fix currency fetching
-            currencyCode: 'USD'
+            currencyCode: currency
           }}
         />
       </Link>
@@ -45,6 +46,7 @@ export async function ThreeItemGrid() {
     Number(process.env.HOMEPAGE_THREE_ITEM_GRID_CATEGORY),
     true
   );
+  const { currency } = await getWebstoreData();
 
   if (
     !homepageItems ||
@@ -58,9 +60,9 @@ export async function ThreeItemGrid() {
 
   return (
     <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2">
-      <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={thirdProduct} />
+      <ThreeItemGridItem size="full" item={firstProduct} priority={true} currency={currency} />
+      <ThreeItemGridItem size="half" item={secondProduct} priority={true} currency={currency} />
+      <ThreeItemGridItem size="half" item={thirdProduct} currency={currency} />
     </section>
   );
 }
