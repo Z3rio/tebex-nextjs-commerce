@@ -20,12 +20,7 @@ export function ProductDescription({ product, currency }: { product: Package; cu
         />
       ) : null}
 
-      {/* todo: fix availableForSale */}
-      <AddToCart
-        availableForSale={true}
-        packageId={product.id.toString()}
-        packageType={product.type}
-      />
+      <AddToCart packageId={product.id.toString()} packageType={product.type} />
     </>
   );
 }

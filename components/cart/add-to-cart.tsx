@@ -7,19 +7,10 @@ import { addItem } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
 import { useFormState, useFormStatus } from 'react-dom';
 
-function SubmitButton({ availableForSale }: { availableForSale: boolean }) {
+function SubmitButton() {
   const { pending } = useFormStatus();
   const buttonClasses =
     'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white';
-  const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
-
-  if (!availableForSale) {
-    return (
-      <button aria-disabled className={clsx(buttonClasses, disabledClasses)}>
-        Out Of Stock
-      </button>
-    );
-  }
 
   return (
     <button
@@ -43,11 +34,9 @@ function SubmitButton({ availableForSale }: { availableForSale: boolean }) {
 
 export function AddToCart({
   packageId,
-  availableForSale,
   packageType
 }: {
   packageId: string;
-  availableForSale: boolean;
   packageType: PackageType;
 }) {
   const [message, formAction] = useFormState(addItem, null);
@@ -58,7 +47,7 @@ export function AddToCart({
 
   return (
     <form action={actionWithVariant}>
-      <SubmitButton availableForSale={availableForSale} />
+      <SubmitButton />
       <p aria-live="polite" className="sr-only" role="status">
         {message}
       </p>
