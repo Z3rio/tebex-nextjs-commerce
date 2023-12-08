@@ -11,7 +11,7 @@ export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
   stringToCheck.startsWith(startsWith) ? stringToCheck : `${startsWith}${stringToCheck}`;
 
 export const validateEnvironmentVariables = () => {
-  const requiredEnvironmentVariables = ['TEBEX_PRIVATE_API_KEY', 'TEBEX_PUBLIC_API_KEY'];
+  const requiredEnvironmentVariables = ['TEBEX_PUBLIC_API_KEY'];
   const missingEnvironmentVariables = [] as string[];
 
   requiredEnvironmentVariables.forEach((envVar) => {
