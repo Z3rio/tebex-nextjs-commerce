@@ -4,7 +4,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Basket } from '@lib/tebex/types';
 import clsx from 'clsx';
 import { Fragment, useEffect, useState } from 'react';
-import { createNewBasket, removeBasket } from './actions';
+import { removeBasket } from './actions';
 import CloseLogin from './close-login';
 import OpenLogin from './open-login';
 
@@ -13,7 +13,16 @@ export default function LoginModal({ authLink, cart }: { authLink?: string; cart
 
   useEffect(() => {
     if (!cart) {
-      createNewBasket();
+      fetch('/createNewBasket', {
+        body: undefined,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF8'
+        },
+        method: 'POST',
+        cache: 'no-store'
+      }).then((resp) => {
+        console.log('resp', resp);
+      });
     }
   }, [cart]);
 

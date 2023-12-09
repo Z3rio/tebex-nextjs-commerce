@@ -1,23 +1,13 @@
 import { TAGS } from '@lib/constants';
 import { AuthUrl, Basket, Category, Data, Message, Package, PackageType, Webstore } from './types';
 
-const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
-const baseUrl = 'https://headless.tebex.io/api';
-
-export async function createBasket(): Promise<Basket | undefined> {
-  const res = await simpleRequest<Data<Basket>>(
-    `${baseUrl}/accounts/${publicApiKey}/baskets`,
-    {},
-    {},
-    { method: 'POST' }
-  );
-
-  if (res) {
-    return res.data;
-  } else {
-    return undefined;
-  }
-}
+export const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY
+  ? process.env.TEBEX_PUBLIC_API_KEY
+  : '';
+export const privateApiKey = process.env.TEBEX_PRIVATE_API_KEY
+  ? process.env.TEBEX_PRIVATE_API_KEY
+  : '';
+export const baseUrl = 'https://headless.tebex.io/api';
 
 export async function addToBasket(
   basketId: string,

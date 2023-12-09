@@ -1,13 +1,7 @@
 'use server';
 
 import { TAGS } from '@lib/constants';
-import {
-  addToBasket,
-  createBasket,
-  getBasket,
-  removeFromBasket,
-  updateQuantityInBasket
-} from '@lib/tebex';
+import { addToBasket, getBasket, removeFromBasket, updateQuantityInBasket } from '@lib/tebex';
 import { Basket, PackageType } from '@lib/tebex/types';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -16,21 +10,15 @@ export async function addItem(
   _prevState: unknown,
   data: { packageId: string; packageType: PackageType }
 ) {
-  let cartId = cookies().get('cartId')?.value;
+  if (!data.packageId) {
+    return 'Missing product variant ID';
+  }
+
+  const cartId = cookies().get('cartId')?.value;
   let cart: Basket | undefined;
 
   if (cartId) {
     cart = await getBasket(cartId);
-  } else {
-    cart = await createBasket();
-
-    if (cart) {
-      cartId = cart.ident.toString();
-    }
-  }
-
-  if (!data.packageId) {
-    return 'Missing product variant ID';
   }
 
   if (!cartId || !cart) {
