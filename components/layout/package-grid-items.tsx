@@ -4,26 +4,26 @@ import { GridTileImage } from 'components/grid/tile';
 import Link from 'next/link';
 import placeholderImage from '../../assets/placeholder-image.webp';
 
-export default function ProductGridItems({
-  products,
+export default function PackageGridItems({
+  packages,
   currency
 }: {
-  products: Package[];
+  packages: Package[];
   currency: string;
 }) {
   return (
     <>
-      {products.map((product) => (
-        <Grid.Item key={product.id} className="animate-fadeIn">
-          <Link className="relative inline-block h-full w-full" href={`/product/${product.id}`}>
+      {packages.map((packageData) => (
+        <Grid.Item key={packageData.id} className="animate-fadeIn">
+          <Link className="relative inline-block h-full w-full" href={`/package/${packageData.id}`}>
             <GridTileImage
-              alt={product.name}
+              alt={packageData.name}
               label={{
-                title: product.name,
-                amount: product.total_price.toString(),
+                title: packageData.name,
+                amount: packageData.total_price.toString(),
                 currencyCode: currency
               }}
-              src={product.image ?? placeholderImage}
+              src={packageData.image ?? placeholderImage}
               fill
               sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
             />

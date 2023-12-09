@@ -92,7 +92,7 @@ export default function CartModal({
                 <div className="flex h-full flex-col justify-between overflow-hidden p-1">
                   <ul className="flex-grow overflow-auto py-4">
                     {cart.packages.map((item, i) => {
-                      const merchandiseUrl = `/product/${item.id}`;
+                      const merchandiseUrl = `/package/${item.id}`;
 
                       return (
                         <li

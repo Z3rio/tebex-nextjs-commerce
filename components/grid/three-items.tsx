@@ -19,7 +19,7 @@ function ThreeItemGridItem({
     <div
       className={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}
     >
-      <Link className="relative block aspect-square h-full w-full" href={`/product/${item.id}`}>
+      <Link className="relative block aspect-square h-full w-full" href={`/package/${item.id}`}>
         <GridTileImage
           src={item.image ?? placeholderImage}
           fill
@@ -57,13 +57,13 @@ export async function ThreeItemGrid() {
   )
     return null;
 
-  const [firstProduct, secondProduct, thirdProduct] = homepageItems.packages;
+  const [firstPackage, secondPackage, thirdPackage] = homepageItems.packages;
 
   return (
     <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2">
-      <ThreeItemGridItem size="full" item={firstProduct} priority={true} currency={currency} />
-      <ThreeItemGridItem size="half" item={secondProduct} priority={true} currency={currency} />
-      <ThreeItemGridItem size="half" item={thirdProduct} currency={currency} />
+      <ThreeItemGridItem size="full" item={firstPackage} priority={true} currency={currency} />
+      <ThreeItemGridItem size="half" item={secondPackage} priority={true} currency={currency} />
+      <ThreeItemGridItem size="half" item={thirdPackage} currency={currency} />
     </section>
   );
 }

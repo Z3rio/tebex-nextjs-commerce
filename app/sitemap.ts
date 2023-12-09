@@ -43,12 +43,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   });
 
-  const productsMap = (await getPackages()).map((product) => {
+  const packagesMap = (await getPackages()).map((package) => {
     return {
-      url: `${baseUrl}/product/${product.id}`,
-      lastModified: product.updated_at
+      url: `${baseUrl}/package/${package.id}`,
+      lastModified: package.updated_at
     };
   });
 
-  return [...routesMap, ...productsMap, ...collectionsMap];
+  return [...routesMap, ...packagesMap, ...collectionsMap];
 }

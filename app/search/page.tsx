@@ -1,6 +1,6 @@
 import { getPackages, getWebstoreData } from '@lib/tebex';
 import Grid from 'components/grid';
-import ProductGridItems from 'components/layout/product-grid-items';
+import PackageGridItems from 'components/layout/package-grid-items';
 
 export const runtime = 'edge';
 
@@ -18,22 +18,22 @@ export default async function SearchPage({
   const webstoreData = await getWebstoreData();
   const currency = webstoreData ? webstoreData.currency : 'EUR';
 
-  const products = await getPackages(searchValue);
-  const resultsText = products.length > 1 ? 'results' : 'result';
+  const packages = await getPackages(searchValue);
+  const resultsText = packages.length > 1 ? 'results' : 'result';
 
   return (
     <>
       {searchValue ? (
         <p className="mb-4">
-          {products.length === 0
+          {packages.length === 0
             ? 'There are no products that match '
-            : `Showing ${products.length} ${resultsText} for `}
+            : `Showing ${packages.length} ${resultsText} for `}
           <span className="font-bold">&quot;{searchValue}&quot;</span>
         </p>
       ) : null}
-      {products.length > 0 ? (
+      {packages.length > 0 ? (
         <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} currency={currency} />
+          <PackageGridItems packages={packages} currency={currency} />
         </Grid>
       ) : null}
     </>

@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 // import Footer from 'components/layout/footer';
 import { getPackage, getWebstoreData } from '@lib/tebex';
 import Footer from 'components/layout/footer';
-import { Gallery } from 'components/product/gallery';
-import { ProductDescription } from 'components/product/product-description';
+import { Gallery } from 'components/package/gallery';
+import { PackageDescription } from 'components/package/package-description';
 import { Suspense } from 'react';
 
 export const runtime = 'edge';
@@ -15,13 +15,13 @@ export async function generateMetadata({
 }: {
   params: { handle: string };
 }): Promise<Metadata> {
-  const product = await getPackage(Number(params.handle));
+  const packageData = await getPackage(Number(params.handle));
 
-  if (!product) return notFound();
+  if (!packageData) return notFound();
 
   return {
-    title: product.name,
-    description: product.description,
+    title: packageData.name,
+    description: packageData.description,
     robots: {
       index: true,
       follow: true,
@@ -30,14 +30,14 @@ export async function generateMetadata({
         follow: true
       }
     },
-    openGraph: product.image
+    openGraph: packageData.image
       ? {
           images: [
             {
-              url: product.image,
+              url: packageData.image,
               // width,
               // height,
-              alt: product.name
+              alt: packageData.name
             }
           ]
         }
@@ -45,24 +45,24 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({ params }: { params: { handle: string } }) {
-  const product = await getPackage(Number(params.handle));
+export default async function PackagePage({ params }: { params: { handle: string } }) {
+  const packageData = await getPackage(Number(params.handle));
   const webstoreData = await getWebstoreData();
   const currency = webstoreData ? webstoreData.currency : 'EUR';
 
-  if (!product) return notFound();
+  if (!packageData) return notFound();
 
-  const productJsonLd = {
+  const packageJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.name,
-    description: product.description,
-    image: product.image,
+    name: packageData.name,
+    description: packageData.description,
+    image: packageData.image,
     offers: {
       '@type': 'AggregateOffer',
       availability: 'https://schema.org/InStock',
       priceCurrency: currency,
-      price: product.total_price
+      price: packageData.total_price
     }
   };
 
@@ -71,7 +71,7 @@ export default async function ProductPage({ params }: { params: { handle: string
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productJsonLd)
+          __html: JSON.stringify(packageJsonLd)
         }}
       />
       <div className="mx-auto max-w-screen-2xl px-4">
@@ -79,11 +79,11 @@ export default async function ProductPage({ params }: { params: { handle: string
           <div className="h-full w-full basis-full lg:basis-4/6">
             <Gallery
               images={
-                product.image
+                packageData.image
                   ? [
                       {
-                        src: product.image,
-                        altText: product.name
+                        src: packageData.image,
+                        altText: packageData.name
                       }
                     ]
                   : []
@@ -92,7 +92,7 @@ export default async function ProductPage({ params }: { params: { handle: string
           </div>
 
           <div className="basis-full lg:basis-2/6">
-            <ProductDescription product={product} currency={currency} />
+            <PackageDescription packageData={packageData} currency={currency} />
           </div>
         </div>
       </div>

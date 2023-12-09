@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import Grid from 'components/grid';
-import ProductGridItems from 'components/layout/product-grid-items';
+import PackageGridItems from 'components/layout/package-grid-items';
 
 export const runtime = 'edge';
 
@@ -28,21 +28,21 @@ export default async function CategoryPage({
   params: { collection: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const product = await getCategory(Number(params.collection), true);
+  const category = await getCategory(Number(params.collection), true);
   const webstoreData = await getWebstoreData();
   const currency = webstoreData ? webstoreData.currency : 'EUR';
 
-  if (!product) {
+  if (!category) {
     return notFound;
   }
 
   return (
     <section>
-      {product.packages.length === 0 ? (
+      {category.packages.length === 0 ? (
         <p className="py-3 text-lg">{`No products found in this collection`}</p>
       ) : (
         <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={product.packages} currency={currency} />
+          <PackageGridItems packages={category.packages} currency={currency} />
         </Grid>
       )}
     </section>

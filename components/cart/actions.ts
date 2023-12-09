@@ -11,7 +11,7 @@ export async function addItem(
   data: { packageId: string; packageType: PackageType }
 ) {
   if (!data.packageId) {
-    return 'Missing product variant ID';
+    return 'Missing package variant ID';
   }
 
   const cartId = cookies().get('cartId')?.value;
