@@ -11,6 +11,11 @@ const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
   : 'http://localhost:3000';
 
+interface SitemapEntry {
+  url: string;
+  lastModified: string;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   validateEnvironmentVariables();
 
@@ -19,8 +24,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString()
   }));
 
-  const collectionsPromise = getCategories(true).then((collections) => {
-    return collections.map((collection) => {
+  const collectionsMap: SitemapEntry[] = [];
+  const categories = await getCategories(true);
+
+  categories.forEach((collection) => {
+    if (collection.packages.length >= 1) {
       const date = collection.packages.reduce((highest, curr) => {
         const currDate = new Date(curr.updated_at).getTime();
 
@@ -29,31 +37,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         } else {
           return highest;
         }
-      }, -Infinity);
+      }, -1);
 
-      return {
-        url: `${baseUrl}/search/${collection.id}`,
-        lastModified: new Date(date).toISOString()
-      };
-    });
+      if (date !== -1) {
+        collectionsMap.push({
+          url: `${baseUrl}/search/${collection.id}`,
+          lastModified: new Date(date).toISOString()
+        });
+      }
+    }
   });
 
-  const productsPromise = getPackages().then((products) => {
-    return products.map((product) => {
-      return {
-        url: `${baseUrl}/product/${product.id}`,
-        lastModified: product.updated_at
-      };
-    });
+  const productsMap = (await getPackages()).map((product) => {
+    return {
+      url: `${baseUrl}/product/${product.id}`,
+      lastModified: product.updated_at
+    };
   });
 
-  let fetchedRoutes: Route[] = [];
-
-  try {
-    fetchedRoutes = (await Promise.all([collectionsPromise, productsPromise])).flat();
-  } catch (error) {
-    throw JSON.stringify(error, null, 2);
-  }
-
-  return [...routesMap, ...fetchedRoutes];
+  return [...routesMap, ...productsMap, ...collectionsMap];
 }
