@@ -19,12 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString()
   }));
 
-  const collectionsMap: SitemapEntry[] = [];
+  const categoriesMap: SitemapEntry[] = [];
   const categories = await getCategories(true);
 
-  categories.forEach((collection) => {
-    if (collection.packages.length >= 1) {
-      const date = collection.packages.reduce((highest, curr) => {
+  categories.forEach((category) => {
+    if (category.packages.length >= 1) {
+      const date = category.packages.reduce((highest, curr) => {
         const currDate = new Date(curr.updated_at).getTime();
 
         if (currDate > highest) {
@@ -35,20 +35,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }, -1);
 
       if (date !== -1) {
-        collectionsMap.push({
-          url: `${baseUrl}/search/${collection.id}`,
+        categoriesMap.push({
+          url: `${baseUrl}/search/${category.id}`,
           lastModified: new Date(date).toISOString()
         });
       }
     }
   });
 
-  const packagesMap = (await getPackages()).map((package) => {
+  const packagesMap = (await getPackages()).map((packageData) => {
     return {
-      url: `${baseUrl}/package/${package.id}`,
-      lastModified: package.updated_at
+      url: `${baseUrl}/package/${packageData.id}`,
+      lastModified: packageData.updated_at
     };
   });
 
-  return [...routesMap, ...packagesMap, ...collectionsMap];
+  return [...routesMap, ...packagesMap, ...categoriesMap];
 }

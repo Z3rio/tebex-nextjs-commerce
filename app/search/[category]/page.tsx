@@ -10,25 +10,25 @@ export const runtime = 'edge';
 export async function generateMetadata({
   params
 }: {
-  params: { collection: string };
+  params: { category: string };
 }): Promise<Metadata> {
-  const collection = await getCategory(Number(params.collection));
+  const category = await getCategory(Number(params.category));
 
-  if (!collection) return notFound();
+  if (!category) return notFound();
 
   return {
-    title: collection.name,
-    description: collection.description
+    title: category.name,
+    description: category.description
   };
 }
 
 export default async function CategoryPage({
   params
 }: {
-  params: { collection: string };
+  params: { category: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const category = await getCategory(Number(params.collection), true);
+  const category = await getCategory(Number(params.category), true);
   const webstoreData = await getWebstoreData();
   const currency = webstoreData ? webstoreData.currency : 'EUR';
 

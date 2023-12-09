@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { getCategories } from '@lib/tebex';
 import FilterList, { PathFilterItem } from './filter';
 
-async function CollectionList() {
+async function CategoryList() {
   const categories: PathFilterItem[] = [
     {
       title: 'All',
@@ -31,7 +31,7 @@ const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded';
 const activeAndTitles = 'bg-neutral-800 dark:bg-neutral-300';
 const items = 'bg-neutral-400 dark:bg-neutral-700';
 
-export default function Collections() {
+export default function Categories() {
   return (
     <Suspense
       fallback={
@@ -49,7 +49,7 @@ export default function Collections() {
         </div>
       }
     >
-      <CollectionList />
+      <CategoryList />
     </Suspense>
   );
 }
