@@ -199,15 +199,8 @@ export async function getPackages(
 
 export async function getPackage(id: number, ipAddress?: string): Promise<Package | undefined> {
   const basketIdentifier = cookies().get('basketId')?.value;
-  console.log(basketIdentifier);
 
   const res = await simpleRequest<Data<Package>>(
-    `${baseUrl}/accounts/${publicApiKey}/packages/${id}${
-      basketIdentifier ? `?basketIdent=${basketIdentifier}` : ''
-    }${ipAddress ? `${basketIdentifier ? '&' : '?'}ipAddress=${ipAddress}` : ''}`
-  );
-
-  console.log(
     `${baseUrl}/accounts/${publicApiKey}/packages/${id}${
       basketIdentifier ? `?basketIdent=${basketIdentifier}` : ''
     }${ipAddress ? `${basketIdentifier ? '&' : '?'}ipAddress=${ipAddress}` : ''}`
