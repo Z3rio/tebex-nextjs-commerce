@@ -1,6 +1,10 @@
-import { baseUrl, privateApiKey, publicApiKey, simpleRequest } from '@lib/tebex';
+import { simpleRequest } from '@lib/tebex';
 import { Basket, Data } from '@lib/tebex/types';
 import { cookies, headers } from 'next/headers';
+
+const baseUrl = process.env.TEBEX_BASE_URL ? process.env.TEBEX_BASE_URL : '';
+const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
+const privateApiKey = process.env.TEBEX_PRIVATE_API_KEY ? process.env.TEBEX_PRIVATE_API_KEY : '';
 
 export async function POST() {
   const ip = headers().get('X-Forwarded-For');
@@ -25,10 +29,11 @@ export async function POST() {
 
     const cart = res?.data;
     if (cart) {
-      cookies().set('cartId', cart.ident);
+      cookies().set('basketId', cart.ident);
 
       return Response.json({
-        ok: true
+        ok: true,
+        basketId: cart.ident
       });
     } else {
       return Response.json({

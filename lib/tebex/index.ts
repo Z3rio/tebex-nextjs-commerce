@@ -1,13 +1,15 @@
+'use server';
+
 import { TAGS } from '@lib/constants';
+import { cookies } from 'next/headers';
 import { AuthUrl, Basket, Category, Data, Message, Package, PackageType, Webstore } from './types';
 
-export const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY
-  ? process.env.TEBEX_PUBLIC_API_KEY
-  : '';
-export const privateApiKey = process.env.TEBEX_PRIVATE_API_KEY
-  ? process.env.TEBEX_PRIVATE_API_KEY
-  : '';
-export const baseUrl = 'https://headless.tebex.io/api';
+const publicApiKey = process.env.TEBEX_PUBLIC_API_KEY ? process.env.TEBEX_PUBLIC_API_KEY : '';
+const baseUrl = 'https://headless.tebex.io/api';
+
+export async function getBasketId() {
+  return cookies().get('basketId')?.value;
+}
 
 export async function addToBasket(
   basketId: string,
@@ -171,10 +173,19 @@ export async function simpleRequest<T>(
   }
 }
 
-export async function getPackages(query?: string, reverse = false): Promise<Package[]> {
+export async function getPackages(
+  query?: string,
+  basketIdentifier?: string,
+  ipAddress?: string,
+  reverse = false
+): Promise<Package[]> {
   query = query ? query.toLowerCase() : query;
 
-  const res = await simpleRequest<Data<Package[]>>(`${baseUrl}/accounts/${publicApiKey}/packages`);
+  const res = await simpleRequest<Data<Package[]>>(
+    `${baseUrl}/accounts/${publicApiKey}/packages${
+      basketIdentifier ? `?basketIdent=${basketIdentifier}` : ''
+    }${ipAddress ? `${basketIdentifier ? '&' : '?'}ipAddress=${ipAddress}` : ''}`
+  );
 
   if (res) {
     const data = res.data;
@@ -186,9 +197,20 @@ export async function getPackages(query?: string, reverse = false): Promise<Pack
   }
 }
 
-export async function getPackage(id: number): Promise<Package | undefined> {
+export async function getPackage(id: number, ipAddress?: string): Promise<Package | undefined> {
+  const basketIdentifier = cookies().get('basketId')?.value;
+  console.log(basketIdentifier);
+
   const res = await simpleRequest<Data<Package>>(
-    `${baseUrl}/accounts/${publicApiKey}/packages/${id}`
+    `${baseUrl}/accounts/${publicApiKey}/packages/${id}${
+      basketIdentifier ? `?basketIdent=${basketIdentifier}` : ''
+    }${ipAddress ? `${basketIdentifier ? '&' : '?'}ipAddress=${ipAddress}` : ''}`
+  );
+
+  console.log(
+    `${baseUrl}/accounts/${publicApiKey}/packages/${id}${
+      basketIdentifier ? `?basketIdent=${basketIdentifier}` : ''
+    }${ipAddress ? `${basketIdentifier ? '&' : '?'}ipAddress=${ipAddress}` : ''}`
   );
 
   if (res) {

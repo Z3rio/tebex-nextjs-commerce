@@ -1,17 +1,12 @@
-import { getBasket, getWebstoreData } from '@lib/tebex';
-import { cookies } from 'next/headers';
+'use client';
+
+import { useBasket, useWebstoreData } from '@lib/hooks';
 import CartModal from './modal';
 
-export default async function Cart() {
-  const cartId = cookies().get('cartId')?.value;
-  const webstoreData = await getWebstoreData();
+export default function Cart() {
+  const webstoreData = useWebstoreData();
+  const cart = useBasket();
   const currency = webstoreData ? webstoreData.currency : 'EUR';
-
-  let cart;
-
-  if (cartId) {
-    cart = await getBasket(cartId);
-  }
 
   return <CartModal cart={cart} currency={currency} />;
 }

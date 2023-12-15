@@ -3,30 +3,15 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Basket } from '@lib/tebex/types';
 import clsx from 'clsx';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { removeBasket } from './actions';
 import CloseLogin from './close-login';
 import OpenLogin from './open-login';
 
-export default function LoginModal({ authLink, cart }: { authLink?: string; cart?: Basket }) {
+export default function LoginModal({ authLink, basket }: { authLink?: string; basket?: Basket }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (!cart) {
-      fetch('/createNewBasket', {
-        body: undefined,
-        headers: {
-          'Content-Type': 'application/json; charset=UTF8'
-        },
-        method: 'POST',
-        cache: 'no-store'
-      }).then((resp) => {
-        console.log('resp', resp);
-      });
-    }
-  }, [cart]);
-
-  if (!cart) {
+  if (!basket) {
     return <OpenLogin />;
   }
 
@@ -72,11 +57,11 @@ export default function LoginModal({ authLink, cart }: { authLink?: string; cart
                 </button>
               </div>
 
-              {cart && cart.username ? (
+              {basket && basket.username ? (
                 <>
                   <h1>You are currently logged in as:</h1>
                   <p>
-                    {cart.username} <i>({cart.username_id})</i>
+                    {basket.username} <i>({basket.username_id})</i>
                   </p>
 
                   <button

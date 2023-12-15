@@ -14,19 +14,19 @@ export async function addItem(
     return 'Missing package variant ID';
   }
 
-  const cartId = cookies().get('cartId')?.value;
+  const basketId = cookies().get('basketId')?.value;
   let cart: Basket | undefined;
 
-  if (cartId) {
-    cart = await getBasket(cartId);
+  if (basketId) {
+    cart = await getBasket(basketId);
   }
 
-  if (!cartId || !cart) {
+  if (!basketId || !cart) {
     return 'Missing cart id or cart data';
   }
 
   try {
-    const addResp = await addToBasket(cartId, Number(data.packageId), data.packageType);
+    const addResp = await addToBasket(basketId, Number(data.packageId), data.packageType);
 
     if (addResp && 'status' in addResp && addResp.status == 422) {
       return 'You must login before doing this';
@@ -40,14 +40,14 @@ export async function addItem(
 }
 
 export async function removeItem(prevState: any, lineId: string) {
-  const cartId = cookies().get('cartId')?.value;
+  const basketId = cookies().get('basketId')?.value;
 
-  if (!cartId) {
+  if (!basketId) {
     return 'Missing cart ID';
   }
 
   try {
-    await removeFromBasket(cartId, Number(lineId));
+    await removeFromBasket(basketId, Number(lineId));
     revalidateTag(TAGS.cart);
   } catch (e) {
     return 'Error removing item from cart';
@@ -61,9 +61,9 @@ export async function updateItemQuantity(
     quantity: number;
   }
 ) {
-  const cartId = cookies().get('cartId')?.value;
+  const basketId = cookies().get('basketId')?.value;
 
-  if (!cartId) {
+  if (!basketId) {
     return 'Missing cart ID';
   }
 
@@ -71,12 +71,12 @@ export async function updateItemQuantity(
 
   try {
     if (quantity === 0) {
-      await removeFromBasket(cartId, Number(lineId));
+      await removeFromBasket(basketId, Number(lineId));
       revalidateTag(TAGS.cart);
       return;
     }
 
-    await updateQuantityInBasket(cartId, lineId, quantity);
+    await updateQuantityInBasket(basketId, lineId, quantity);
     revalidateTag(TAGS.cart);
   } catch (e) {
     return 'Error updating item quantity';
